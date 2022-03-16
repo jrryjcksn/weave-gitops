@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	fluxNamespacePartOf   = "flux"
+	FluxNamespacePartOf   = "flux"
 	fluxNamespaceInstance = "flux-system"
 )
 
@@ -24,7 +24,7 @@ func (as *coreServer) GetFluxNamespace(ctx context.Context, msg *pb.GetFluxNames
 
 	nsList := corev1.NamespaceList{}
 	options := matchLabel(
-		withPartOfLabel(fluxNamespacePartOf),
+		withPartOfLabel(FluxNamespacePartOf),
 		withInstanceLabel(fluxNamespaceInstance),
 	)
 

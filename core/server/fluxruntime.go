@@ -30,9 +30,11 @@ func (as *coreServer) ListFluxRuntimeObjects(ctx context.Context, msg *pb.ListFl
 		return nil, doClientError(err)
 	}
 
+	opt := matchLabel(withPartOfLabel(FluxNamespacePartOf))
+
 	l := &appsv1.DeploymentList{}
 
-	if err := list(ctx, k8s, temporarilyEmptyAppName, msg.Namespace, l); err != nil {
+	if err := list(ctx, k8s, temporarilyEmptyAppName, msg.Namespace, l, opt); err != nil {
 		return nil, err
 	}
 
