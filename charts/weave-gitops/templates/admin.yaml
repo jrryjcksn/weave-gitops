@@ -20,7 +20,7 @@ metadata:
   namespace: {{.Values.namespace}}
 rules:
   - apiGroups: [""]
-    resources: ["secrets", "pods" ]
+    resources: ["secrets", "pods", "namespaces"]
     verbs: [ "get", "list" ]
   - apiGroups: ["apps"]
     resources: [ "deployments", "replicasets", "pods" ]

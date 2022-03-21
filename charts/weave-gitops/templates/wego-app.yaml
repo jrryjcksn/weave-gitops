@@ -61,7 +61,7 @@ rules:
     resources: [ "users", "groups", "serviceaccounts" ]
     verbs: [ "impersonate" ]
   - apiGroups: [""]
-    resources: [ "secrets" ]
+    resources: [ "secrets", "namespaces" ]
     verbs: [ "get", "list" ]
 ---
 apiVersion: rbac.authorization.k8s.io/v1

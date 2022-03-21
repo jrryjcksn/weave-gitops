@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-logr/logr"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/weaveworks/weave-gitops/core/nslister"
 	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
 	"github.com/weaveworks/weave-gitops/pkg/kube"
 	"google.golang.org/grpc/codes"
@@ -30,8 +31,9 @@ const temporarilyEmptyAppName = ""
 type coreServer struct {
 	pb.UnimplementedCoreServer
 
-	k8s    kube.ClientGetter
-	logger logr.Logger
+	k8s      kube.ClientGetter
+	logger   logr.Logger
+	nsLister nslister.NSLister
 }
 
 type CoreServerConfig struct {
@@ -50,9 +52,12 @@ func NewCoreConfig(cfg *rest.Config, clusterName string) CoreServerConfig {
 func NewCoreServer(cfg CoreServerConfig) pb.CoreServer {
 	cfgGetter := kube.NewImpersonatingConfigGetter(cfg.RestCfg, false)
 
+	lister := nslister.NewNSLister()
+
 	return &coreServer{
-		k8s:    kube.NewDefaultClientGetter(cfgGetter, cfg.clusterName),
-		logger: cfg.Logger,
+		k8s:      kube.NewDefaultClientGetter(cfgGetter, cfg.clusterName),
+		logger:   cfg.Logger,
+		nsLister: lister,
 	}
 }
 

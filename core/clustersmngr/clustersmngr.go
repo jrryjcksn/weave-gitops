@@ -48,17 +48,17 @@ type ClusterFetcher interface {
 // ClientsPool stores all clients to the leaf clusters
 type ClientsPool interface {
 	Add(user *auth.UserPrincipal, cluster Cluster) error
-	Clients() map[string]client.Client
+	Clients() map[string]ClusterClient
 }
 
 type clientsPool struct {
-	clients map[string]client.Client
+	clients map[string]ClusterClient
 }
 
 // NewClustersClientsPool initializes a new ClientsPool
 func NewClustersClientsPool() ClientsPool {
 	return &clientsPool{
-		clients: map[string]client.Client{},
+		clients: map[string]ClusterClient{},
 	}
 }
 
@@ -81,12 +81,26 @@ func (cp *clientsPool) Add(user *auth.UserPrincipal, cluster Cluster) error {
 		return fmt.Errorf("failed to create leaf client: %w", err)
 	}
 
-	cp.clients[cluster.Name] = leafClient
+	cp.clients[cluster.Name] = cfgWrapper{leafClient, config}
 
 	return nil
 }
 
 // Clients returns the clusters clients
-func (cp *clientsPool) Clients() map[string]client.Client {
+func (cp *clientsPool) Clients() map[string]ClusterClient {
 	return cp.clients
+}
+
+type ClusterClient interface {
+	client.Client
+	RestConfig() *rest.Config
+}
+
+type cfgWrapper struct {
+	client.Client
+	cfg *rest.Config
+}
+
+func (cw cfgWrapper) RestConfig() *rest.Config {
+	return cw.cfg
 }
