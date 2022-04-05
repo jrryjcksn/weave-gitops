@@ -37,7 +37,9 @@ jobs:
       - name: "Make All"
         run: make all
       - name: Check Git State
-        run: git diff --no-ext-diff --exit-code
+        run: |
+          git status
+          git diff --no-ext-diff --exit-code
       - name: Build Changelog
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v1
